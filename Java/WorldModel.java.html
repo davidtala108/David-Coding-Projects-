@@ -1,0 +1,393 @@
+<html>
+<head>
+<title>WorldModel.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #2aacb8;}
+.s5 { color: #6aab73;}
+.s6 { color: #7a7e85;}
+.s7 { color: #67a37c; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+WorldModel.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">processing</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">PApplet</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">processing</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">PImage</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.*;</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Represents the 2D World in which this simulation is running.</span>
+ <span class="s3">* Keeps track of the size of the world, the background image for each</span>
+ <span class="s3">* location in the world, and the entities that populate the world.</span>
+ <span class="s3">*/</span>
+<span class="s0">public final class </span><span class="s1">WorldModel </span><span class="s2">{</span>
+    <span class="s0">public static final int </span><span class="s1">KEYED_IMAGE_MIN </span><span class="s2">= </span><span class="s4">5</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">PROPERTY_KEY </span><span class="s2">= </span><span class="s4">0</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">PROPERTY_ID </span><span class="s2">= </span><span class="s4">1</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">PROPERTY_COL </span><span class="s2">= </span><span class="s4">2</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">PROPERTY_ROW </span><span class="s2">= </span><span class="s4">3</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">ENTITY_NUM_PROPERTIES </span><span class="s2">= </span><span class="s4">4</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">COLOR_MASK </span><span class="s2">= </span><span class="s4">0xffffff</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">KEYED_RED_IDX </span><span class="s2">= </span><span class="s4">2</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">KEYED_GREEN_IDX </span><span class="s2">= </span><span class="s4">3</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">KEYED_BLUE_IDX </span><span class="s2">= </span><span class="s4">4</span><span class="s2">;</span>
+    <span class="s0">private int </span><span class="s1">numRows</span><span class="s2">;</span>
+    <span class="s0">private int </span><span class="s1">numCols</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">Background</span><span class="s2">[][] </span><span class="s1">background</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">Entity</span><span class="s2">[][] </span><span class="s1">occupancy</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">Set</span><span class="s2">&lt;</span><span class="s1">Entity</span><span class="s2">&gt; </span><span class="s1">entities</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">WorldModel</span><span class="s2">() {</span>
+
+    <span class="s2">}</span>
+
+    <span class="s0">public int </span><span class="s1">getRows</span><span class="s2">() {</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s1">numRows</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public int </span><span class="s1">getCols</span><span class="s2">() {</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s1">numCols</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Set</span><span class="s2">&lt;</span><span class="s1">Entity</span><span class="s2">&gt; </span><span class="s1">getEntities</span><span class="s2">() {</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s1">entities</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">processImageLine</span><span class="s2">(</span><span class="s1">Map</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt;&gt; </span><span class="s1">images</span><span class="s2">, </span><span class="s1">String line</span><span class="s2">, </span><span class="s1">PApplet screen</span><span class="s2">) {</span>
+        <span class="s1">String</span><span class="s2">[] </span><span class="s1">attrs </span><span class="s2">= </span><span class="s1">line</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s5">&quot;</span><span class="s0">\\</span><span class="s5">s&quot;</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">attrs</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&gt;= </span><span class="s4">2</span><span class="s2">) {</span>
+            <span class="s1">String key </span><span class="s2">= </span><span class="s1">attrs</span><span class="s2">[</span><span class="s4">0</span><span class="s2">];</span>
+            <span class="s1">PImage img </span><span class="s2">= </span><span class="s1">screen</span><span class="s2">.</span><span class="s1">loadImage</span><span class="s2">(</span><span class="s1">attrs</span><span class="s2">[</span><span class="s4">1</span><span class="s2">]);</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">img </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">img</span><span class="s2">.</span><span class="s1">width </span><span class="s2">!= -</span><span class="s4">1</span><span class="s2">) {</span>
+                <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">imgs </span><span class="s2">= </span><span class="s1">getImages</span><span class="s2">(</span><span class="s1">images</span><span class="s2">, </span><span class="s1">key</span><span class="s2">);</span>
+                <span class="s1">imgs</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">img</span><span class="s2">);</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">attrs</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&gt;= </span><span class="s1">KEYED_IMAGE_MIN</span><span class="s2">) {</span>
+                    <span class="s0">int </span><span class="s1">r </span><span class="s2">= </span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">parseInt</span><span class="s2">(</span><span class="s1">attrs</span><span class="s2">[</span><span class="s1">KEYED_RED_IDX</span><span class="s2">]);</span>
+                    <span class="s0">int </span><span class="s1">g </span><span class="s2">= </span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">parseInt</span><span class="s2">(</span><span class="s1">attrs</span><span class="s2">[</span><span class="s1">KEYED_GREEN_IDX</span><span class="s2">]);</span>
+                    <span class="s0">int </span><span class="s1">b </span><span class="s2">= </span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">parseInt</span><span class="s2">(</span><span class="s1">attrs</span><span class="s2">[</span><span class="s1">KEYED_BLUE_IDX</span><span class="s2">]);</span>
+                    <span class="s1">setAlpha</span><span class="s2">(</span><span class="s1">img</span><span class="s2">, </span><span class="s1">screen</span><span class="s2">.</span><span class="s1">color</span><span class="s2">(</span><span class="s1">r</span><span class="s2">, </span><span class="s1">g</span><span class="s2">, </span><span class="s1">b</span><span class="s2">), </span><span class="s4">0</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public static </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">getImages</span><span class="s2">(</span><span class="s1">Map</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt;&gt; </span><span class="s1">images</span><span class="s2">, </span><span class="s1">String key</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">images</span><span class="s2">.</span><span class="s1">computeIfAbsent</span><span class="s2">(</span><span class="s1">key</span><span class="s2">, </span><span class="s1">k -&gt; </span><span class="s0">new </span><span class="s1">LinkedList</span><span class="s2">&lt;&gt;());</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/* Called with color for which alpha should be set and alpha value. 
+        setAlpha(img, color(255, 255, 255), 0)); 
+    */</span>
+    <span class="s0">private static void </span><span class="s1">setAlpha</span><span class="s2">(</span><span class="s1">PImage img</span><span class="s2">, </span><span class="s0">int </span><span class="s1">maskColor</span><span class="s2">, </span><span class="s0">int </span><span class="s1">alpha</span><span class="s2">) {</span>
+        <span class="s0">int </span><span class="s1">alphaValue </span><span class="s2">= </span><span class="s1">alpha </span><span class="s2">&lt;&lt; </span><span class="s4">24</span><span class="s2">;</span>
+        <span class="s0">int </span><span class="s1">nonAlpha </span><span class="s2">= </span><span class="s1">maskColor </span><span class="s2">&amp; </span><span class="s1">COLOR_MASK</span><span class="s2">;</span>
+        <span class="s1">img</span><span class="s2">.</span><span class="s1">format </span><span class="s2">= </span><span class="s1">PApplet</span><span class="s2">.</span><span class="s1">ARGB</span><span class="s2">;</span>
+        <span class="s1">img</span><span class="s2">.</span><span class="s1">loadPixels</span><span class="s2">();</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s4">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">img</span><span class="s2">.</span><span class="s1">pixels</span><span class="s2">.</span><span class="s1">length</span><span class="s2">; </span><span class="s1">i</span><span class="s2">++) {</span>
+            <span class="s0">if </span><span class="s2">((</span><span class="s1">img</span><span class="s2">.</span><span class="s1">pixels</span><span class="s2">[</span><span class="s1">i</span><span class="s2">] &amp; </span><span class="s1">COLOR_MASK</span><span class="s2">) == </span><span class="s1">nonAlpha</span><span class="s2">) {</span>
+                <span class="s1">img</span><span class="s2">.</span><span class="s1">pixels</span><span class="s2">[</span><span class="s1">i</span><span class="s2">] = </span><span class="s1">alphaValue </span><span class="s2">| </span><span class="s1">nonAlpha</span><span class="s2">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">img</span><span class="s2">.</span><span class="s1">updatePixels</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public static void </span><span class="s1">loadImages</span><span class="s2">(</span><span class="s1">Scanner in</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">, </span><span class="s1">PApplet screen</span><span class="s2">) {</span>
+        <span class="s0">int </span><span class="s1">lineNumber </span><span class="s2">= </span><span class="s4">0</span><span class="s2">;</span>
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">in</span><span class="s2">.</span><span class="s1">hasNextLine</span><span class="s2">()) {</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s1">processImageLine</span><span class="s2">(</span><span class="s1">imageStore</span><span class="s2">.</span><span class="s1">getImages</span><span class="s2">(), </span><span class="s1">in</span><span class="s2">.</span><span class="s1">nextLine</span><span class="s2">(), </span><span class="s1">screen</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">NumberFormatException e</span><span class="s2">) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">printf</span><span class="s2">(</span><span class="s5">&quot;Image format error on line %d</span><span class="s0">\n</span><span class="s5">&quot;</span><span class="s2">, </span><span class="s1">lineNumber</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s1">lineNumber</span><span class="s2">++;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">parseSapling</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">properties</span><span class="s2">, </span><span class="s1">Point pt</span><span class="s2">, </span><span class="s1">String id</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">properties</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s4">1</span><span class="s2">) {</span>
+            <span class="s0">int </span><span class="s1">health </span><span class="s2">= </span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">parseInt</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s4">0</span><span class="s2">]);</span>
+            <span class="s1">Sapling entity </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Sapling</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">.</span><span class="s1">getImageList</span><span class="s2">(</span><span class="s5">&quot;sapling&quot;</span><span class="s2">),</span><span class="s4">1.00</span><span class="s2">, </span><span class="s1">health</span><span class="s2">);</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">tryAddEntity</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s5">&quot;%s requires %d properties when parsing&quot;</span><span class="s2">, </span><span class="s5">&quot;sapling&quot;</span><span class="s2">, </span><span class="s4">1</span><span class="s2">));</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">parseDude</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">properties</span><span class="s2">, </span><span class="s1">Point pt</span><span class="s2">, </span><span class="s1">String id</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">properties</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s1">Dude</span><span class="s2">.</span><span class="s1">DUDE_NUM_PROPERTIES</span><span class="s2">) {</span>
+            <span class="s1">Dude entity </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Dude_Not_Full</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">.</span><span class="s1">getImageList</span><span class="s2">(</span><span class="s1">Dude</span><span class="s2">.</span><span class="s1">DUDE_KEY</span><span class="s2">),</span><span class="s4">0</span><span class="s2">,  </span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">parseInt</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s1">Dude</span><span class="s2">.</span><span class="s1">DUDE_RESOURCE_LIMIT_IDX</span><span class="s2">]), </span><span class="s4">0</span><span class="s2">, </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s1">Dude</span><span class="s2">.</span><span class="s1">DUDE_ACTION_PERIOD_IDX</span><span class="s2">]), </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s1">Dude</span><span class="s2">.</span><span class="s1">DUDE_ANIMATION_PERIOD_IDX</span><span class="s2">]));</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">tryAddEntity</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s5">&quot;%s requires %d properties when parsing&quot;</span><span class="s2">, </span><span class="s5">&quot;dude&quot;</span><span class="s2">, </span><span class="s4">1</span><span class="s2">));</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">parseFairy</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">properties</span><span class="s2">, </span><span class="s1">Point pt</span><span class="s2">, </span><span class="s1">String id</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">properties</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s4">2</span><span class="s2">) {</span>
+            <span class="s1">Fairy entity </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Fairy</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">.</span><span class="s1">getImageList</span><span class="s2">(</span><span class="s5">&quot;fairy&quot;</span><span class="s2">), </span><span class="s4">0</span><span class="s2">,   </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s4">1</span><span class="s2">]), </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s4">0</span><span class="s2">]));</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">tryAddEntity</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s5">&quot;%s requires %d properties when parsing&quot;</span><span class="s2">, </span><span class="s5">&quot;fairy&quot;</span><span class="s2">, </span><span class="s4">2</span><span class="s2">));</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">parseTree</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">properties</span><span class="s2">, </span><span class="s1">Point pt</span><span class="s2">, </span><span class="s1">String id</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">properties</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s4">3</span><span class="s2">) {</span>
+            <span class="s1">Tree entity </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Tree</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">,</span><span class="s1">imageStore</span><span class="s2">.</span><span class="s1">getImageList</span><span class="s2">(</span><span class="s5">&quot;tree&quot;</span><span class="s2">),</span><span class="s4">0</span><span class="s2">, </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s4">1</span><span class="s2">]), </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s4">0</span><span class="s2">]),</span><span class="s1">Functions</span><span class="s2">.</span><span class="s1">getIntFromRange</span><span class="s2">(</span><span class="s4">3</span><span class="s2">,</span><span class="s4">1</span><span class="s2">));</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">tryAddEntity</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s5">&quot;%s requires %d properties when parsing&quot;</span><span class="s2">, </span><span class="s5">&quot;tree&quot;</span><span class="s2">, </span><span class="s4">3</span><span class="s2">));</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">parseObstacle</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">properties</span><span class="s2">, </span><span class="s1">Point pt</span><span class="s2">, </span><span class="s1">String id</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">properties</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s4">1</span><span class="s2">) {</span>
+            <span class="s1">Obstacle entity </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Obstacle</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">,</span><span class="s1">imageStore</span><span class="s2">.</span><span class="s1">getImageList</span><span class="s2">(</span><span class="s5">&quot;obstacle&quot;</span><span class="s2">), </span><span class="s4">0</span><span class="s2">,</span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s4">0</span><span class="s2">]));</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">tryAddEntity</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s5">&quot;%s requires %d properties when parsing&quot;</span><span class="s2">, </span><span class="s5">&quot;obstacle&quot;</span><span class="s2">, </span><span class="s4">1</span><span class="s2">));</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">parseHouse</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">properties</span><span class="s2">, </span><span class="s1">Point pt</span><span class="s2">, </span><span class="s1">String id</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">properties</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s4">0</span><span class="s2">) {</span>
+            <span class="s1">House entity </span><span class="s2">= </span><span class="s0">new </span><span class="s1">House</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">.</span><span class="s1">getImageList</span><span class="s2">(</span><span class="s5">&quot;house&quot;</span><span class="s2">));</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">tryAddEntity</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s5">&quot;%s requires %d properties when parsing&quot;</span><span class="s2">, </span><span class="s5">&quot;house&quot;</span><span class="s2">, </span><span class="s4">0</span><span class="s2">));</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">parseStump</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">properties</span><span class="s2">, </span><span class="s1">Point pt</span><span class="s2">, </span><span class="s1">String id</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">properties</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s4">0</span><span class="s2">) {</span>
+            <span class="s1">Stump entity </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Stump</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">.</span><span class="s1">getImageList</span><span class="s2">(</span><span class="s5">&quot;stump&quot;</span><span class="s2">),</span><span class="s4">0</span><span class="s2">);</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">tryAddEntity</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s5">&quot;%s requires %d properties when parsing&quot;</span><span class="s2">, </span><span class="s5">&quot;stump&quot;</span><span class="s2">, </span><span class="s4">0</span><span class="s2">));</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Optional</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">getBackgroundImage</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">withinBounds</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">)) {</span>
+            <span class="s0">return </span><span class="s1">Optional</span><span class="s2">.</span><span class="s1">of</span><span class="s2">(</span><span class="s1">getBackgroundCell</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">).</span><span class="s1">getCurrentImage</span><span class="s2">());</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s0">return </span><span class="s1">Optional</span><span class="s2">.</span><span class="s1">empty</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setBackgroundCell</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">, </span><span class="s1">Background background</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">background</span><span class="s2">[</span><span class="s1">pos</span><span class="s2">.</span><span class="s1">y</span><span class="s2">][</span><span class="s1">pos</span><span class="s2">.</span><span class="s1">x</span><span class="s2">] = </span><span class="s1">background</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Background getBackgroundCell</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">) {</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s1">background</span><span class="s2">[</span><span class="s1">pos</span><span class="s2">.</span><span class="s1">y</span><span class="s2">][</span><span class="s1">pos</span><span class="s2">.</span><span class="s1">x</span><span class="s2">];</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* This method reads a line and creates a new Entity depending on the line's instructions,</span>
+     <span class="s3">* then adds the new Entity to the World.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s7">@param </span><span class="s3">line The line. An example line is: tree 35 37 0.256 1.168 2</span>
+     <span class="s3">* </span><span class="s7">@param </span><span class="s3">imageStore Images to use for the Entity that will be created.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public void </span><span class="s1">parseEntity</span><span class="s2">(</span><span class="s1">String line</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s1">String</span><span class="s2">[] </span><span class="s1">properties </span><span class="s2">= </span><span class="s1">line</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s5">&quot; &quot;</span><span class="s2">, </span><span class="s1">ENTITY_NUM_PROPERTIES </span><span class="s2">+ </span><span class="s4">1</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">properties</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&gt;= </span><span class="s1">ENTITY_NUM_PROPERTIES</span><span class="s2">) {</span>
+            <span class="s1">String key </span><span class="s2">= </span><span class="s1">properties</span><span class="s2">[</span><span class="s1">PROPERTY_KEY</span><span class="s2">];</span>
+            <span class="s1">String id </span><span class="s2">= </span><span class="s1">properties</span><span class="s2">[</span><span class="s1">PROPERTY_ID</span><span class="s2">];</span>
+            <span class="s1">Point pt </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">parseInt</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s1">PROPERTY_COL</span><span class="s2">]), </span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">parseInt</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">[</span><span class="s1">PROPERTY_ROW</span><span class="s2">]));</span>
+
+            <span class="s1">properties </span><span class="s2">= </span><span class="s1">properties</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s1">ENTITY_NUM_PROPERTIES </span><span class="s2">?</span>
+                    <span class="s0">new </span><span class="s1">String</span><span class="s2">[</span><span class="s4">0</span><span class="s2">] : </span><span class="s1">properties</span><span class="s2">[</span><span class="s1">ENTITY_NUM_PROPERTIES</span><span class="s2">].</span><span class="s1">split</span><span class="s2">(</span><span class="s5">&quot; &quot;</span><span class="s2">);</span>
+
+            <span class="s0">switch </span><span class="s2">(</span><span class="s1">key</span><span class="s2">) {</span>
+                <span class="s0">case </span><span class="s5">&quot;obstacle&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">parseObstacle</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">id</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                <span class="s0">case </span><span class="s5">&quot;dude&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">parseDude</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">id</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                <span class="s0">case </span><span class="s5">&quot;fairy&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">parseFairy</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">id</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                <span class="s0">case </span><span class="s5">&quot;house&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">parseHouse</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">id</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                <span class="s0">case </span><span class="s5">&quot;tree&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">parseTree</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">id</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                <span class="s0">case </span><span class="s5">&quot;sapling&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">parseSapling</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">id</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                <span class="s0">case </span><span class="s5">&quot;stump&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">parseStump</span><span class="s2">(</span><span class="s1">properties</span><span class="s2">, </span><span class="s1">pt</span><span class="s2">, </span><span class="s1">id</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                <span class="s0">default </span><span class="s1">-&gt; </span><span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s5">&quot;Entity key is unknown&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s5">&quot;Entity must be formatted as [key] [id] [x] [y] ...&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Like {</span><span class="s7">@code </span><span class="s3">parseEntity}, parses a line to determine what kind of Background to add to the world.</span>
+     <span class="s3">* </span><span class="s7">@param </span><span class="s3">line A line of text (e.g., &quot;grass grass grass flowers glowers dirt_vert_left&quot;) that</span>
+     <span class="s3">*             determines what background images are drawn on a per-cell basis.</span>
+     <span class="s3">* </span><span class="s7">@param </span><span class="s3">row The index of the row for which Backgrounds are being selected.</span>
+     <span class="s3">* </span><span class="s7">@param </span><span class="s3">imageStore Images to use for the Backgrounds.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public void </span><span class="s1">parseBackgroundRow</span><span class="s2">(</span><span class="s1">String line</span><span class="s2">, </span><span class="s0">int </span><span class="s1">row</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s1">String</span><span class="s2">[] </span><span class="s1">cells </span><span class="s2">= </span><span class="s1">line</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s5">&quot; &quot;</span><span class="s2">);</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">row </span><span class="s2">&lt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">numRows</span><span class="s2">){</span>
+            <span class="s0">int </span><span class="s1">rows </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">min</span><span class="s2">(</span><span class="s1">cells</span><span class="s2">.</span><span class="s1">length</span><span class="s2">, </span><span class="s0">this</span><span class="s2">.</span><span class="s1">numCols</span><span class="s2">);</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">col </span><span class="s2">= </span><span class="s4">0</span><span class="s2">; </span><span class="s1">col </span><span class="s2">&lt; </span><span class="s1">rows</span><span class="s2">; </span><span class="s1">col</span><span class="s2">++){</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">background</span><span class="s2">[</span><span class="s1">row</span><span class="s2">][</span><span class="s1">col</span><span class="s2">] = </span><span class="s0">new </span><span class="s1">Background</span><span class="s2">(</span><span class="s1">cells</span><span class="s2">[</span><span class="s1">col</span><span class="s2">], </span><span class="s1">imageStore</span><span class="s2">.</span><span class="s1">getImageList</span><span class="s2">(</span><span class="s1">cells</span><span class="s2">[</span><span class="s1">col</span><span class="s2">]));</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Parses a save file that describes the start state of the World. It describes the entities,</span>
+     <span class="s3">* their starting positions and properties, and backgrounds for each location in the World.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s7">@param </span><span class="s3">saveFile A Scanner that is set up to read from a specified save file.</span>
+     <span class="s3">* </span><span class="s7">@param </span><span class="s3">imageStore Images to use for Entities and Backgrounds.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public void </span><span class="s1">parseSaveFile</span><span class="s2">(</span><span class="s1">Scanner saveFile</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">){</span>
+        <span class="s1">String lastHeader </span><span class="s2">= </span><span class="s5">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">int </span><span class="s1">headerLine </span><span class="s2">= </span><span class="s4">0</span><span class="s2">;</span>
+        <span class="s0">int </span><span class="s1">lineCounter </span><span class="s2">= </span><span class="s4">0</span><span class="s2">;</span>
+        <span class="s0">while</span><span class="s2">(</span><span class="s1">saveFile</span><span class="s2">.</span><span class="s1">hasNextLine</span><span class="s2">()){</span>
+            <span class="s1">lineCounter</span><span class="s2">++;</span>
+            <span class="s1">String line </span><span class="s2">= </span><span class="s1">saveFile</span><span class="s2">.</span><span class="s1">nextLine</span><span class="s2">().</span><span class="s1">strip</span><span class="s2">();</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">line</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s5">&quot;:&quot;</span><span class="s2">)){</span>
+                <span class="s1">headerLine </span><span class="s2">= </span><span class="s1">lineCounter</span><span class="s2">;</span>
+                <span class="s1">lastHeader </span><span class="s2">= </span><span class="s1">line</span><span class="s2">;</span>
+                <span class="s0">switch </span><span class="s2">(</span><span class="s1">line</span><span class="s2">){</span>
+                    <span class="s0">case </span><span class="s5">&quot;Backgrounds:&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">background </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Background</span><span class="s2">[</span><span class="s0">this</span><span class="s2">.</span><span class="s1">numRows</span><span class="s2">][</span><span class="s0">this</span><span class="s2">.</span><span class="s1">numCols</span><span class="s2">];</span>
+                    <span class="s0">case </span><span class="s5">&quot;Entities:&quot; </span><span class="s1">-&gt; </span><span class="s2">{</span>
+                        <span class="s0">this</span><span class="s2">.</span><span class="s1">occupancy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Entity</span><span class="s2">[</span><span class="s0">this</span><span class="s2">.</span><span class="s1">numRows</span><span class="s2">][</span><span class="s0">this</span><span class="s2">.</span><span class="s1">numCols</span><span class="s2">];</span>
+                        <span class="s0">this</span><span class="s2">.</span><span class="s1">entities </span><span class="s2">= </span><span class="s0">new </span><span class="s1">HashSet</span><span class="s2">&lt;&gt;();</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+                <span class="s0">switch </span><span class="s2">(</span><span class="s1">lastHeader</span><span class="s2">){</span>
+                    <span class="s0">case </span><span class="s5">&quot;Rows:&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">numRows </span><span class="s2">= </span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">parseInt</span><span class="s2">(</span><span class="s1">line</span><span class="s2">);</span>
+                    <span class="s0">case </span><span class="s5">&quot;Cols:&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">numCols </span><span class="s2">= </span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">parseInt</span><span class="s2">(</span><span class="s1">line</span><span class="s2">);</span>
+                    <span class="s0">case </span><span class="s5">&quot;Backgrounds:&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">parseBackgroundRow</span><span class="s2">(</span><span class="s1">line</span><span class="s2">, </span><span class="s1">lineCounter</span><span class="s2">-</span><span class="s1">headerLine</span><span class="s2">-</span><span class="s4">1</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                    <span class="s0">case </span><span class="s5">&quot;Entities:&quot; </span><span class="s1">-&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">parseEntity</span><span class="s2">(</span><span class="s1">line</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">load</span><span class="s2">(</span><span class="s1">Scanner saveFile</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">, </span><span class="s1">Background defaultBackground</span><span class="s2">){</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">parseSaveFile</span><span class="s2">(</span><span class="s1">saveFile</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">background </span><span class="s2">== </span><span class="s0">null</span><span class="s2">){</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">background </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Background</span><span class="s2">[</span><span class="s0">this</span><span class="s2">.</span><span class="s1">numRows</span><span class="s2">][</span><span class="s0">this</span><span class="s2">.</span><span class="s1">numCols</span><span class="s2">];</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">Background</span><span class="s2">[] </span><span class="s1">row </span><span class="s2">: </span><span class="s0">this</span><span class="s2">.</span><span class="s1">background</span><span class="s2">)</span>
+                <span class="s1">Arrays</span><span class="s2">.</span><span class="s1">fill</span><span class="s2">(</span><span class="s1">row</span><span class="s2">, </span><span class="s1">defaultBackground</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">occupancy </span><span class="s2">== </span><span class="s0">null</span><span class="s2">){</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">occupancy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Entity</span><span class="s2">[</span><span class="s0">this</span><span class="s2">.</span><span class="s1">numRows</span><span class="s2">][</span><span class="s0">this</span><span class="s2">.</span><span class="s1">numCols</span><span class="s2">];</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">entities </span><span class="s2">= </span><span class="s0">new </span><span class="s1">HashSet</span><span class="s2">&lt;&gt;();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setOccupancyCell</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">, </span><span class="s1">Entity entity</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">occupancy</span><span class="s2">[</span><span class="s1">pos</span><span class="s2">.</span><span class="s1">y</span><span class="s2">][</span><span class="s1">pos</span><span class="s2">.</span><span class="s1">x</span><span class="s2">] = </span><span class="s1">entity</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Entity getOccupancyCell</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">) {</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s1">occupancy</span><span class="s2">[</span><span class="s1">pos</span><span class="s2">.</span><span class="s1">y</span><span class="s2">][</span><span class="s1">pos</span><span class="s2">.</span><span class="s1">x</span><span class="s2">];</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Optional</span><span class="s2">&lt;</span><span class="s1">Entity</span><span class="s2">&gt; </span><span class="s1">getOccupant</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isOccupied</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">)) {</span>
+            <span class="s0">return </span><span class="s1">Optional</span><span class="s2">.</span><span class="s1">of</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">getOccupancyCell</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">));</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s0">return </span><span class="s1">Optional</span><span class="s2">.</span><span class="s1">empty</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">removeEntityAt</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">withinBounds</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">) &amp;&amp; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getOccupancyCell</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">) != </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">Entity entity </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getOccupancyCell</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">);</span>
+
+            <span class="s6">/* This moves the entity just outside of the grid for 
+             * debugging purposes. */</span>
+            <span class="s1">entity</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(-</span><span class="s4">1</span><span class="s2">, -</span><span class="s4">1</span><span class="s2">));</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">entities</span><span class="s2">.</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">setOccupancyCell</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">, </span><span class="s0">null</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">removeEntity</span><span class="s2">(</span><span class="s1">EventScheduler scheduler</span><span class="s2">, </span><span class="s1">Entity entity</span><span class="s2">) {</span>
+        <span class="s1">scheduler</span><span class="s2">.</span><span class="s1">unscheduleAllEvents</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">removeEntityAt</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">.</span><span class="s1">getPosition</span><span class="s2">());</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">moveEntity</span><span class="s2">(</span><span class="s1">EventScheduler scheduler</span><span class="s2">, </span><span class="s1">Entity entity</span><span class="s2">, </span><span class="s1">Point pos</span><span class="s2">) {</span>
+        <span class="s1">Point oldPos </span><span class="s2">= </span><span class="s1">entity</span><span class="s2">.</span><span class="s1">getPosition</span><span class="s2">();</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">withinBounds</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">) &amp;&amp; !</span><span class="s1">pos</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">oldPos</span><span class="s2">)) {</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">setOccupancyCell</span><span class="s2">(</span><span class="s1">oldPos</span><span class="s2">, </span><span class="s0">null</span><span class="s2">);</span>
+            <span class="s1">Optional</span><span class="s2">&lt;</span><span class="s1">Entity</span><span class="s2">&gt; </span><span class="s1">occupant </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getOccupant</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">);</span>
+            <span class="s1">occupant</span><span class="s2">.</span><span class="s1">ifPresent</span><span class="s2">(</span><span class="s1">target -&gt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">removeEntity</span><span class="s2">(</span><span class="s1">scheduler</span><span class="s2">, </span><span class="s1">target</span><span class="s2">));</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">setOccupancyCell</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">, </span><span class="s1">entity</span><span class="s2">);</span>
+            <span class="s1">entity</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/* 
+           Assumes that there is no entity currently occupying the 
+           intended destination cell. 
+        */</span>
+    <span class="s0">public void </span><span class="s1">addEntity</span><span class="s2">(</span><span class="s1">Entity entity</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">withinBounds</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">.</span><span class="s1">getPosition</span><span class="s2">())) {</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">setOccupancyCell</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">.</span><span class="s1">getPosition</span><span class="s2">(), </span><span class="s1">entity</span><span class="s2">);</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">entities</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Optional</span><span class="s2">&lt;</span><span class="s1">Entity</span><span class="s2">&gt; </span><span class="s1">findNearest</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Class</span><span class="s2">&lt;?&gt;&gt; </span><span class="s1">classType</span><span class="s2">) {</span>
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Entity</span><span class="s2">&gt; </span><span class="s1">ofType </span><span class="s2">= </span><span class="s0">new </span><span class="s1">LinkedList</span><span class="s2">&lt;&gt;();</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">Class</span><span class="s2">&lt;?&gt; </span><span class="s1">c </span><span class="s2">: </span><span class="s1">classType</span><span class="s2">) {</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">Entity entity </span><span class="s2">: </span><span class="s0">this</span><span class="s2">.</span><span class="s1">entities</span><span class="s2">) {</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">entity</span><span class="s2">.</span><span class="s1">getClass</span><span class="s2">() == </span><span class="s1">c</span><span class="s2">) {</span>
+                    <span class="s1">ofType</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">Entity</span><span class="s2">.</span><span class="s1">nearestEntity</span><span class="s2">(</span><span class="s1">ofType</span><span class="s2">, </span><span class="s1">pos</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">isOccupied</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">withinBounds</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">) &amp;&amp; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getOccupancyCell</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">) != </span><span class="s0">null</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">withinBounds</span><span class="s2">(</span><span class="s1">Point pos</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">pos</span><span class="s2">.</span><span class="s1">y </span><span class="s2">&gt;= </span><span class="s4">0 </span><span class="s2">&amp;&amp; </span><span class="s1">pos</span><span class="s2">.</span><span class="s1">y </span><span class="s2">&lt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">numRows </span><span class="s2">&amp;&amp; </span><span class="s1">pos</span><span class="s2">.</span><span class="s1">x </span><span class="s2">&gt;= </span><span class="s4">0 </span><span class="s2">&amp;&amp; </span><span class="s1">pos</span><span class="s2">.</span><span class="s1">x </span><span class="s2">&lt; </span><span class="s0">this</span><span class="s2">.</span><span class="s1">numCols</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">tryAddEntity</span><span class="s2">(</span><span class="s1">Entity entity</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">isOccupied</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">.</span><span class="s1">getPosition</span><span class="s2">())) {</span>
+            <span class="s6">// arguably the wrong type of exception, but we are not</span>
+            <span class="s6">// defining our own exceptions yet</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s5">&quot;position occupied&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">addEntity</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Helper method for testing. Don't move or modify this method.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; </span><span class="s1">log</span><span class="s2">(){</span>
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; </span><span class="s1">list </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;&gt;();</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">Entity entity </span><span class="s2">: </span><span class="s1">entities</span><span class="s2">) {</span>
+            <span class="s1">String log </span><span class="s2">= </span><span class="s1">entity</span><span class="s2">.</span><span class="s1">log</span><span class="s2">();</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">log </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) </span><span class="s1">list</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">log</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">list</span><span class="s2">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

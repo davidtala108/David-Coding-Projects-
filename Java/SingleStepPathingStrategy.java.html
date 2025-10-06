@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>SingleStepPathingStrategy.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SingleStepPathingStrategy.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">function</span><span class="s2">.</span><span class="s1">BiPredicate</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">function</span><span class="s2">.</span><span class="s1">Function</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">function</span><span class="s2">.</span><span class="s1">Predicate</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">stream</span><span class="s2">.</span><span class="s1">Collectors</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">stream</span><span class="s2">.</span><span class="s1">Stream</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">SingleStepPathingStrategy </span><span class="s0">implements </span><span class="s1">PathingStrategy</span><span class="s2">{</span>
+        <span class="s0">public </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">computePath</span><span class="s2">(</span><span class="s1">Point start</span><span class="s2">, </span><span class="s1">Point end</span><span class="s2">,</span>
+            <span class="s1">Predicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">canPassThrough</span><span class="s2">,</span>
+            <span class="s1">BiPredicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">withinReach</span><span class="s2">,</span>
+            <span class="s1">Function</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Stream</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt;&gt; </span><span class="s1">potentialNeighbors</span><span class="s2">)</span>
+        <span class="s2">{</span>
+            <span class="s3">/* Does not check withinReach.  Since only a single step is taken 
+             * on each call, the caller will need to check if the destination 
+             * has been reached. 
+             */</span>
+            <span class="s0">return </span><span class="s1">potentialNeighbors</span><span class="s2">.</span><span class="s1">apply</span><span class="s2">(</span><span class="s1">start</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">filter</span><span class="s2">(</span><span class="s1">canPassThrough</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">filter</span><span class="s2">(</span><span class="s1">pt -&gt;</span>
+                            <span class="s2">!</span><span class="s1">pt</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">start</span><span class="s2">)</span>
+                                    <span class="s2">&amp;&amp; !</span><span class="s1">pt</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">end</span><span class="s2">)</span>
+                                    <span class="s2">&amp;&amp; </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">end</span><span class="s2">.</span><span class="s1">x </span><span class="s2">- </span><span class="s1">pt</span><span class="s2">.</span><span class="s1">x</span><span class="s2">) &lt;= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">end</span><span class="s2">.</span><span class="s1">x </span><span class="s2">- </span><span class="s1">start</span><span class="s2">.</span><span class="s1">x</span><span class="s2">)</span>
+                                    <span class="s2">&amp;&amp; </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">end</span><span class="s2">.</span><span class="s1">y </span><span class="s2">- </span><span class="s1">pt</span><span class="s2">.</span><span class="s1">y</span><span class="s2">) &lt;= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">end</span><span class="s2">.</span><span class="s1">y </span><span class="s2">- </span><span class="s1">start</span><span class="s2">.</span><span class="s1">y</span><span class="s2">))</span>
+
+                    <span class="s2">.</span><span class="s1">limit</span><span class="s2">(</span><span class="s4">1</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">collect</span><span class="s2">(</span><span class="s1">Collectors</span><span class="s2">.</span><span class="s1">toList</span><span class="s2">());</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+
+</pre>
+</body>
+</html>

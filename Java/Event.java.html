@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>Event.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #5f826b; font-style: italic;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Event.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/**</span>
+ <span class="s0">* An event is made up of an Entity that is taking an</span>
+ <span class="s0">* Action a specified time.</span>
+ <span class="s0">*/</span>
+<span class="s2">public final class </span><span class="s1">Event </span><span class="s3">{</span>
+    <span class="s2">private final </span><span class="s1">Action action</span><span class="s3">;</span>
+    <span class="s2">private final double </span><span class="s1">time</span><span class="s3">;</span>
+    <span class="s2">private final </span><span class="s1">Entity entity</span><span class="s3">;</span>
+
+    <span class="s2">public </span><span class="s1">Event</span><span class="s3">(</span><span class="s1">Action action</span><span class="s3">, </span><span class="s2">double </span><span class="s1">time</span><span class="s3">, </span><span class="s1">Entity entity</span><span class="s3">) {</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">action </span><span class="s3">= </span><span class="s1">action</span><span class="s3">;</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">time </span><span class="s3">= </span><span class="s1">time</span><span class="s3">;</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">entity </span><span class="s3">= </span><span class="s1">entity</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s2">public </span><span class="s1">Action getAction</span><span class="s3">() {</span>
+        <span class="s2">return </span><span class="s1">action</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s2">public double </span><span class="s1">getTime</span><span class="s3">() {</span>
+        <span class="s2">return </span><span class="s1">time</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s2">public </span><span class="s1">Entity getEntity</span><span class="s3">() {</span>
+        <span class="s2">return </span><span class="s1">entity</span><span class="s3">;</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

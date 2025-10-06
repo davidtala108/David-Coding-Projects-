@@ -1,0 +1,106 @@
+<html>
+<head>
+<title>Fairy.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Fairy.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">processing</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">PImage</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">ArrayList</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Optional</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">Fairy </span><span class="s0">extends </span><span class="s1">activity_entity </span><span class="s2">{</span>
+    <span class="s0">public double </span><span class="s1">actionPeriod</span><span class="s2">;</span>
+    <span class="s0">public double </span><span class="s1">animationPeriod</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Fairy</span><span class="s2">( </span><span class="s1">String Id</span><span class="s2">, </span><span class="s1">Point point</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">images</span><span class="s2">, </span><span class="s0">int </span><span class="s1">imageIndex</span><span class="s2">, </span><span class="s0">double </span><span class="s1">actionPeriod</span><span class="s2">, </span><span class="s0">double </span><span class="s1">animationPeriod</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">(</span><span class="s1">Id</span><span class="s2">, </span><span class="s1">point</span><span class="s2">, </span><span class="s1">images</span><span class="s2">, </span><span class="s1">imageIndex</span><span class="s2">);</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">actionPeriod </span><span class="s2">= </span><span class="s1">actionPeriod</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">animationPeriod </span><span class="s2">= </span><span class="s1">animationPeriod</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+
+    <span class="s0">public double </span><span class="s1">getAnimationPeriod</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">animationPeriod</span><span class="s2">;</span>
+    <span class="s2">}</span>
+    <span class="s0">public </span><span class="s1">Point nextPositionFairy</span><span class="s2">(</span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">Point destPos</span><span class="s2">){</span>
+        <span class="s0">return </span><span class="s1">nextPositionFairy</span><span class="s2">(</span><span class="s1">world</span><span class="s2">, </span><span class="s1">destPos</span><span class="s2">, </span><span class="s0">new </span><span class="s1">SingleStepPathingStrategy</span><span class="s2">());</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Point nextPositionFairy</span><span class="s2">(</span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">Point destPos</span><span class="s2">, </span><span class="s1">PathingStrategy strategy</span><span class="s2">) {</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">position</span><span class="s2">, </span><span class="s1">destPos</span><span class="s2">,</span>
+                <span class="s1">pt -&gt; world</span><span class="s2">.</span><span class="s1">withinBounds</span><span class="s2">(</span><span class="s1">pt</span><span class="s2">) &amp;&amp; !</span><span class="s1">world</span><span class="s2">.</span><span class="s1">isOccupied</span><span class="s2">(</span><span class="s1">pt</span><span class="s2">),</span>
+                <span class="s2">(</span><span class="s1">pt1</span><span class="s2">, </span><span class="s1">pt2</span><span class="s2">) </span><span class="s1">-&gt; pt1</span><span class="s2">.</span><span class="s1">adjacent</span><span class="s2">(</span><span class="s1">pt2</span><span class="s2">),</span>
+                <span class="s1">PathingStrategy</span><span class="s2">.</span><span class="s1">CARDINAL_NEIGHBORS</span><span class="s2">);</span>
+
+        <span class="s0">return </span><span class="s1">path</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() ? </span><span class="s0">this</span><span class="s2">.</span><span class="s1">position </span><span class="s2">: </span><span class="s1">path</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">0</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">moveToFairy</span><span class="s2">(</span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">Entity target</span><span class="s2">, </span><span class="s1">EventScheduler scheduler</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">position</span><span class="s2">.</span><span class="s1">adjacent</span><span class="s2">(</span><span class="s1">target</span><span class="s2">.</span><span class="s1">position</span><span class="s2">)) {</span>
+            <span class="s1">world</span><span class="s2">.</span><span class="s1">removeEntity</span><span class="s2">(</span><span class="s1">scheduler</span><span class="s2">, </span><span class="s1">target</span><span class="s2">);</span>
+            <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">Point nextPos </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">nextPositionFairy</span><span class="s2">(</span><span class="s1">world</span><span class="s2">, </span><span class="s1">target</span><span class="s2">.</span><span class="s1">position</span><span class="s2">);</span>
+
+            <span class="s0">if </span><span class="s2">(!</span><span class="s0">this</span><span class="s2">.</span><span class="s1">position</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">nextPos</span><span class="s2">)) {</span>
+                <span class="s1">world</span><span class="s2">.</span><span class="s1">moveEntity</span><span class="s2">(</span><span class="s1">scheduler</span><span class="s2">, </span><span class="s0">this</span><span class="s2">, </span><span class="s1">nextPos</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s0">return false</span><span class="s2">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">executeActivity</span><span class="s2">( </span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">, </span><span class="s1">EventScheduler scheduler</span><span class="s2">) {</span>
+
+            <span class="s1">Optional</span><span class="s2">&lt;</span><span class="s1">Entity</span><span class="s2">&gt; </span><span class="s1">fairyTarget </span><span class="s2">= </span><span class="s1">world</span><span class="s2">.</span><span class="s1">findNearest</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">position</span><span class="s2">, </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;&gt;(</span><span class="s1">List</span><span class="s2">.</span><span class="s1">of</span><span class="s2">(</span><span class="s1">Stump</span><span class="s2">.</span><span class="s0">class</span><span class="s2">)));</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">fairyTarget</span><span class="s2">.</span><span class="s1">isPresent</span><span class="s2">()) {</span>
+                <span class="s1">Point tgtPos </span><span class="s2">= </span><span class="s1">fairyTarget</span><span class="s2">.</span><span class="s1">get</span><span class="s2">().</span><span class="s1">position</span><span class="s2">;</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">moveToFairy</span><span class="s2">(</span><span class="s1">world</span><span class="s2">, </span><span class="s1">fairyTarget</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(), </span><span class="s1">scheduler</span><span class="s2">)) {</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">id</span><span class="s2">);</span>
+
+                    <span class="s1">Entity sapling </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Sapling</span><span class="s2">(</span><span class="s4">&quot;sapling_&quot; </span><span class="s2">+ </span><span class="s1">fairyTarget</span><span class="s2">.</span><span class="s1">get</span><span class="s2">().</span><span class="s1">id</span><span class="s2">, </span><span class="s1">tgtPos</span><span class="s2">, </span><span class="s0">this</span><span class="s2">.</span><span class="s1">images</span><span class="s2">, </span><span class="s3">1.00</span><span class="s2">, </span><span class="s3">0</span><span class="s2">);</span>
+
+                    <span class="s1">world</span><span class="s2">.</span><span class="s1">addEntity</span><span class="s2">(</span><span class="s1">sapling</span><span class="s2">);</span>
+
+                    <span class="s1">sapling</span><span class="s2">.</span><span class="s1">scheduleActions</span><span class="s2">(</span><span class="s1">scheduler</span><span class="s2">, </span><span class="s1">world</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s1">scheduler</span><span class="s2">.</span><span class="s1">scheduleEvent</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s0">new </span><span class="s1">Activity</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">world</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">), </span><span class="s0">this</span><span class="s2">.</span><span class="s1">actionPeriod</span><span class="s2">);</span>
+        <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">executeAnimation</span><span class="s2">(</span><span class="s1">EventScheduler scheduler</span><span class="s2">, </span><span class="s0">int </span><span class="s1">repeat</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">nextImage</span><span class="s2">();</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">repeat </span><span class="s2">!= </span><span class="s3">1</span><span class="s2">) {</span>
+            <span class="s1">scheduler</span><span class="s2">.</span><span class="s1">scheduleEvent</span><span class="s2">(</span>
+                    <span class="s0">this</span><span class="s2">,</span>
+                    <span class="s0">new </span><span class="s1">Animation</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">max</span><span class="s2">(</span><span class="s1">repeat </span><span class="s2">- </span><span class="s3">1</span><span class="s2">, </span><span class="s3">0</span><span class="s2">)),</span>
+                    <span class="s0">this</span><span class="s2">.</span><span class="s1">getAnimationPeriod</span><span class="s2">()</span>
+            <span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">scheduleActions</span><span class="s2">(</span><span class="s1">EventScheduler scheduler</span><span class="s2">, </span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s1">scheduler</span><span class="s2">.</span><span class="s1">scheduleEvent</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s0">new </span><span class="s1">Activity</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">world</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">), </span><span class="s0">this</span><span class="s2">.</span><span class="s1">actionPeriod</span><span class="s2">);</span>
+        <span class="s1">scheduler</span><span class="s2">.</span><span class="s1">scheduleEvent</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s0">new </span><span class="s1">Animation</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">0</span><span class="s2">), </span><span class="s0">this</span><span class="s2">.</span><span class="s1">animationPeriod</span><span class="s2">);</span>
+    <span class="s2">}</span>
+    <span class="s2">}</span>
+
+</pre>
+</body>
+</html>

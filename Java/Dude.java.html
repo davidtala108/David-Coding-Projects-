@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>Dude.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Dude.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">processing</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">PImage</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+
+<span class="s0">public abstract class </span><span class="s1">Dude </span><span class="s0">extends </span><span class="s1">transform_entity </span><span class="s2">{</span>
+    <span class="s0">public static final </span><span class="s1">String DUDE_KEY </span><span class="s2">= </span><span class="s3">&quot;dude&quot;</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">DUDE_ACTION_PERIOD_IDX </span><span class="s2">= </span><span class="s4">0</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">DUDE_ANIMATION_PERIOD_IDX </span><span class="s2">= </span><span class="s4">1</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">DUDE_RESOURCE_LIMIT_IDX </span><span class="s2">= </span><span class="s4">2</span><span class="s2">;</span>
+    <span class="s0">public static final int </span><span class="s1">DUDE_NUM_PROPERTIES </span><span class="s2">= </span><span class="s4">3</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">Dude</span><span class="s2">(</span><span class="s1">String id</span><span class="s2">, </span><span class="s1">Point position</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">images</span><span class="s2">, </span><span class="s0">int </span><span class="s1">imageIndex</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">position</span><span class="s2">, </span><span class="s1">images</span><span class="s2">, </span><span class="s1">imageIndex</span><span class="s2">);</span>
+    <span class="s2">}</span>
+    <span class="s0">public </span><span class="s1">Point nextPositionDude</span><span class="s2">(</span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">Point destPos</span><span class="s2">){</span>
+        <span class="s0">return </span><span class="s1">nextPositionDude</span><span class="s2">(</span><span class="s1">world</span><span class="s2">, </span><span class="s1">destPos</span><span class="s2">, </span><span class="s0">new </span><span class="s1">SingleStepPathingStrategy</span><span class="s2">());</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Point nextPositionDude</span><span class="s2">(</span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">Point destPos</span><span class="s2">, </span><span class="s1">PathingStrategy strategy</span><span class="s2">) {</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">( </span><span class="s0">this</span><span class="s2">.</span><span class="s1">position</span><span class="s2">,</span><span class="s1">destPos</span><span class="s2">, </span><span class="s1">pt-&gt; world</span><span class="s2">.</span><span class="s1">withinBounds</span><span class="s2">(</span><span class="s1">pt</span><span class="s2">) &amp;&amp; (!</span><span class="s1">world</span><span class="s2">.</span><span class="s1">isOccupied</span><span class="s2">(</span><span class="s1">pt</span><span class="s2">) || (</span><span class="s1">world</span><span class="s2">.</span><span class="s1">getOccupancyCell</span><span class="s2">(</span><span class="s1">pt</span><span class="s2">) </span><span class="s0">instanceof </span><span class="s1">Stump</span><span class="s2">)),</span>
+        <span class="s2">(</span><span class="s1">pt1</span><span class="s2">,</span><span class="s1">pt2</span><span class="s2">) </span><span class="s1">-&gt; pt1</span><span class="s2">.</span><span class="s1">adjacent</span><span class="s2">(</span><span class="s1">pt2</span><span class="s2">),</span>
+        <span class="s1">PathingStrategy</span><span class="s2">.</span><span class="s1">CARDINAL_NEIGHBORS</span><span class="s2">);</span>
+
+        <span class="s0">return </span><span class="s1">path</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() ? </span><span class="s0">this</span><span class="s2">.</span><span class="s1">position </span><span class="s2">: </span><span class="s1">path</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s4">0</span><span class="s2">);</span>
+    <span class="s2">}</span>
+    <span class="s2">}</span>
+</pre>
+</body>
+</html>

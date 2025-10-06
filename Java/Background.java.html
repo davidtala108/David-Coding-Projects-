@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>Background.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #2aacb8;}
+.s5 { color: #67a37c; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Background.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">processing</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">PImage</span><span class="s2">;</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Represents a background for the 2D world.</span>
+ <span class="s3">*/</span>
+<span class="s0">public final class </span><span class="s1">Background </span><span class="s2">{</span>
+    <span class="s0">private final </span><span class="s1">String id</span><span class="s2">;</span>
+    <span class="s0">private final </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">images</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Background</span><span class="s2">(</span><span class="s1">String id</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">images</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">id </span><span class="s2">= </span><span class="s1">id</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">images </span><span class="s2">= </span><span class="s1">images</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">PImage getCurrentImage</span><span class="s2">() {</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s1">images</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s4">0</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* </span><span class="s5">@return </span><span class="s3">The Background's id. Useful for debugging in project 4.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public </span><span class="s1">String getId</span><span class="s2">() {</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s1">id</span><span class="s2">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

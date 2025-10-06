@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>Activity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Activity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">public class </span><span class="s1">Activity </span><span class="s0">extends </span><span class="s1">Action </span><span class="s2">{</span>
+    <span class="s0">private final </span><span class="s1">WorldModel world</span><span class="s2">;</span>
+    <span class="s0">private final </span><span class="s1">ImageStore imageStore</span><span class="s2">;</span>
+
+
+    <span class="s0">public </span><span class="s1">Activity</span><span class="s2">(</span><span class="s1">Entity entity</span><span class="s2">, </span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">(</span><span class="s1">entity</span><span class="s2">);</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">world </span><span class="s2">= </span><span class="s1">world</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">imageStore </span><span class="s2">= </span><span class="s1">imageStore</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">WorldModel getWorld</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">world</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">execute</span><span class="s2">(</span><span class="s1">EventScheduler scheduler</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">entity </span><span class="s0">instanceof </span><span class="s1">activity_entity</span><span class="s2">) {</span>
+            <span class="s1">activity_entity A </span><span class="s2">= (</span><span class="s1">activity_entity</span><span class="s2">) </span><span class="s1">entity</span><span class="s2">;</span>
+            <span class="s1">A</span><span class="s2">.</span><span class="s1">executeActivity</span><span class="s2">(</span><span class="s1">world</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">, </span><span class="s1">scheduler</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

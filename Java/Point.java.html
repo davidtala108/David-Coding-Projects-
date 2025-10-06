@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>Point.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #5f826b; font-style: italic;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+.s6 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Point.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/**</span>
+ <span class="s0">* A simple class representing a location in 2D space.</span>
+ <span class="s0">*/</span>
+<span class="s2">public final class </span><span class="s1">Point </span><span class="s3">{</span>
+    <span class="s4">// It's okay for these to be public, since the Point is a super-simple</span>
+    <span class="s4">// wrapper around an x and y coordinate, and these are marked final besides.</span>
+    <span class="s2">public final int </span><span class="s1">x</span><span class="s3">;</span>
+    <span class="s2">public final int </span><span class="s1">y</span><span class="s3">;</span>
+
+    <span class="s2">public </span><span class="s1">Point</span><span class="s3">(</span><span class="s2">int </span><span class="s1">x</span><span class="s3">, </span><span class="s2">int </span><span class="s1">y</span><span class="s3">) {</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">x </span><span class="s3">= </span><span class="s1">x</span><span class="s3">;</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">y </span><span class="s3">= </span><span class="s1">y</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s2">public int </span><span class="s1">distanceSquared</span><span class="s3">(</span><span class="s1">Point p2</span><span class="s3">) {</span>
+        <span class="s2">int </span><span class="s1">deltaX </span><span class="s3">= </span><span class="s2">this</span><span class="s3">.</span><span class="s1">x </span><span class="s3">- </span><span class="s1">p2</span><span class="s3">.</span><span class="s1">x</span><span class="s3">;</span>
+        <span class="s2">int </span><span class="s1">deltaY </span><span class="s3">= </span><span class="s2">this</span><span class="s3">.</span><span class="s1">y </span><span class="s3">- </span><span class="s1">p2</span><span class="s3">.</span><span class="s1">y</span><span class="s3">;</span>
+
+        <span class="s2">return </span><span class="s1">deltaX </span><span class="s3">* </span><span class="s1">deltaX </span><span class="s3">+ </span><span class="s1">deltaY </span><span class="s3">* </span><span class="s1">deltaY</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s2">public boolean </span><span class="s1">adjacent</span><span class="s3">(</span><span class="s1">Point p2</span><span class="s3">) {</span>
+        <span class="s2">return </span><span class="s3">(</span><span class="s2">this</span><span class="s3">.</span><span class="s1">x </span><span class="s3">== </span><span class="s1">p2</span><span class="s3">.</span><span class="s1">x </span><span class="s3">&amp;&amp; </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s2">this</span><span class="s3">.</span><span class="s1">y </span><span class="s3">- </span><span class="s1">p2</span><span class="s3">.</span><span class="s1">y</span><span class="s3">) == </span><span class="s5">1</span><span class="s3">) || (</span><span class="s2">this</span><span class="s3">.</span><span class="s1">y </span><span class="s3">== </span><span class="s1">p2</span><span class="s3">.</span><span class="s1">y </span><span class="s3">&amp;&amp; </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s2">this</span><span class="s3">.</span><span class="s1">x </span><span class="s3">- </span><span class="s1">p2</span><span class="s3">.</span><span class="s1">x</span><span class="s3">) == </span><span class="s5">1</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s2">public </span><span class="s1">String toString</span><span class="s3">() {</span>
+        <span class="s2">return </span><span class="s6">&quot;(&quot; </span><span class="s3">+ </span><span class="s1">x </span><span class="s3">+ </span><span class="s6">&quot;,&quot; </span><span class="s3">+ </span><span class="s1">y </span><span class="s3">+ </span><span class="s6">&quot;)&quot;</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s2">public boolean </span><span class="s1">equals</span><span class="s3">(</span><span class="s1">Object other</span><span class="s3">) {</span>
+        <span class="s2">return </span><span class="s1">other </span><span class="s2">instanceof </span><span class="s1">Point </span><span class="s3">&amp;&amp; ((</span><span class="s1">Point</span><span class="s3">) </span><span class="s1">other</span><span class="s3">).</span><span class="s1">x </span><span class="s3">== </span><span class="s2">this</span><span class="s3">.</span><span class="s1">x </span><span class="s3">&amp;&amp; ((</span><span class="s1">Point</span><span class="s3">) </span><span class="s1">other</span><span class="s3">).</span><span class="s1">y </span><span class="s3">== </span><span class="s2">this</span><span class="s3">.</span><span class="s1">y</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s2">public int </span><span class="s1">hashCode</span><span class="s3">() {</span>
+        <span class="s2">int </span><span class="s1">result </span><span class="s3">= </span><span class="s5">17</span><span class="s3">;</span>
+        <span class="s1">result </span><span class="s3">= </span><span class="s1">result </span><span class="s3">* </span><span class="s5">31 </span><span class="s3">+ </span><span class="s1">x</span><span class="s3">;</span>
+        <span class="s1">result </span><span class="s3">= </span><span class="s1">result </span><span class="s3">* </span><span class="s5">31 </span><span class="s3">+ </span><span class="s1">y</span><span class="s3">;</span>
+        <span class="s2">return </span><span class="s1">result</span><span class="s3">;</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<html>
+<head>
+<title>Entity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Entity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">processing</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">PImage</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Optional</span><span class="s2">;</span>
+
+
+<span class="s0">public abstract class </span><span class="s1">Entity </span><span class="s0">extends </span><span class="s1">SingleStepPathingStrategy</span><span class="s2">{</span>
+    <span class="s0">public </span><span class="s1">String id</span><span class="s2">;</span>
+    <span class="s0">public  </span><span class="s1">Point position</span><span class="s2">;</span>
+    <span class="s0">public final </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">images</span><span class="s2">;</span>
+    <span class="s0">public int </span><span class="s1">imageIndex</span><span class="s2">;</span>
+
+
+
+    <span class="s0">public </span><span class="s1">Entity</span><span class="s2">(</span><span class="s1">String id</span><span class="s2">, </span><span class="s1">Point position</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">images</span><span class="s2">, </span><span class="s0">int </span><span class="s1">imageIndex</span><span class="s2">){</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">id </span><span class="s2">= </span><span class="s1">id</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">position</span><span class="s2">= </span><span class="s1">position</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">images </span><span class="s2">= </span><span class="s1">images</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">imageIndex </span><span class="s2">= </span><span class="s1">imageIndex</span><span class="s2">;</span>
+    <span class="s2">}</span>
+    <span class="s0">public void </span><span class="s1">setId</span><span class="s2">(</span><span class="s1">String Id</span><span class="s2">){</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">id </span><span class="s2">= </span><span class="s1">Id</span><span class="s2">;</span>
+    <span class="s2">}</span>
+    <span class="s0">public </span><span class="s1">String getId</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">id</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Point getPosition</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">position</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">Point position</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">position </span><span class="s2">= </span><span class="s1">position</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+
+    <span class="s0">public </span><span class="s1">PImage getCurrentImage</span><span class="s2">(){</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s1">images</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">imageIndex </span><span class="s2">% </span><span class="s0">this</span><span class="s2">.</span><span class="s1">images</span><span class="s2">.</span><span class="s1">size</span><span class="s2">());</span>
+    <span class="s2">}</span>
+    <span class="s0">public void </span><span class="s1">nextImage</span><span class="s2">() {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">imageIndex </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">imageIndex </span><span class="s2">+ </span><span class="s3">1</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public static </span><span class="s1">Optional</span><span class="s2">&lt;</span><span class="s1">Entity</span><span class="s2">&gt; </span><span class="s1">nearestEntity</span><span class="s2">(</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Entity</span><span class="s2">&gt; </span><span class="s1">entities</span><span class="s2">, </span><span class="s1">Point pos</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">entities</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s0">return </span><span class="s1">Optional</span><span class="s2">.</span><span class="s1">empty</span><span class="s2">();</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">Entity nearest </span><span class="s2">= </span><span class="s1">entities</span><span class="s2">.</span><span class="s1">getFirst</span><span class="s2">();</span>
+            <span class="s0">int </span><span class="s1">nearestDistance </span><span class="s2">= </span><span class="s1">nearest</span><span class="s2">.</span><span class="s1">position</span><span class="s2">.</span><span class="s1">distanceSquared</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">);</span>
+
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">Entity other </span><span class="s2">: </span><span class="s1">entities</span><span class="s2">) {</span>
+                <span class="s0">int </span><span class="s1">otherDistance </span><span class="s2">= </span><span class="s1">other</span><span class="s2">.</span><span class="s1">position</span><span class="s2">.</span><span class="s1">distanceSquared</span><span class="s2">(</span><span class="s1">pos</span><span class="s2">);</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">otherDistance </span><span class="s2">&lt; </span><span class="s1">nearestDistance</span><span class="s2">) {</span>
+                    <span class="s1">nearest </span><span class="s2">= </span><span class="s1">other</span><span class="s2">;</span>
+                    <span class="s1">nearestDistance </span><span class="s2">= </span><span class="s1">otherDistance</span><span class="s2">;</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s0">return </span><span class="s1">Optional</span><span class="s2">.</span><span class="s1">of</span><span class="s2">(</span><span class="s1">nearest</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+        <span class="s0">public abstract void </span><span class="s1">scheduleActions </span><span class="s2">(</span><span class="s1">EventScheduler scheduler</span><span class="s2">, </span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">);</span>
+
+        <span class="s0">public </span><span class="s1">String log </span><span class="s2">() {</span>
+            <span class="s0">return this</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() ? </span><span class="s0">null </span><span class="s2">:</span>
+                    <span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s4">&quot;%s %d %d %d&quot;</span><span class="s2">, </span><span class="s0">this</span><span class="s2">.</span><span class="s1">id</span><span class="s2">, </span><span class="s0">this</span><span class="s2">.</span><span class="s1">position</span><span class="s2">.</span><span class="s1">x</span><span class="s2">, </span><span class="s0">this</span><span class="s2">.</span><span class="s1">position</span><span class="s2">.</span><span class="s1">y</span><span class="s2">, </span><span class="s0">this</span><span class="s2">.</span><span class="s1">imageIndex</span><span class="s2">);</span>
+        <span class="s2">}</span>
+
+
+<span class="s2">}</span></pre>
+</body>
+</html>

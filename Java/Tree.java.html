@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>Tree.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Tree.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">processing</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">PImage</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">Tree </span><span class="s0">extends </span><span class="s1">Plant </span><span class="s2">{</span>
+    <span class="s0">private final double </span><span class="s1">actionPeriod</span><span class="s2">;</span>
+    <span class="s0">private final double </span><span class="s1">animationPeriod</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Tree</span><span class="s2">(</span><span class="s1">String id</span><span class="s2">, </span><span class="s1">Point point</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PImage</span><span class="s2">&gt; </span><span class="s1">Image</span><span class="s2">, </span><span class="s0">int </span><span class="s1">imageIndex</span><span class="s2">,</span><span class="s0">double </span><span class="s1">actionPeriod</span><span class="s2">, </span><span class="s0">double </span><span class="s1">animationPeriod</span><span class="s2">, </span><span class="s0">int </span><span class="s1">health</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">( </span><span class="s1">id</span><span class="s2">, </span><span class="s1">point</span><span class="s2">, </span><span class="s1">Image</span><span class="s2">,</span><span class="s1">imageIndex</span><span class="s2">, </span><span class="s1">health</span><span class="s2">);</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">actionPeriod </span><span class="s2">= </span><span class="s1">actionPeriod</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">animationPeriod </span><span class="s2">= </span><span class="s1">animationPeriod</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+
+    <span class="s0">public double </span><span class="s1">getAnimationPeriod</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">animationPeriod</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public boolean </span><span class="s1">transform</span><span class="s2">(</span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">EventScheduler scheduler</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">getHealth</span><span class="s2">() &lt;= </span><span class="s3">0</span><span class="s2">) {</span>
+                <span class="s1">Stump stump </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Stump</span><span class="s2">(</span><span class="s4">&quot;stump_&quot; </span><span class="s2">+ </span><span class="s0">this</span><span class="s2">.</span><span class="s1">id</span><span class="s2">, </span><span class="s0">this</span><span class="s2">.</span><span class="s1">position</span><span class="s2">, </span><span class="s0">this</span><span class="s2">.</span><span class="s1">images</span><span class="s2">, </span><span class="s3">0</span><span class="s2">);</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">id </span><span class="s2">!= </span><span class="s4">&quot;mydude&quot;</span><span class="s2">) {</span>
+                    <span class="s0">this</span><span class="s2">.</span><span class="s1">setId</span><span class="s2">(</span><span class="s4">&quot;stump_&quot; </span><span class="s2">+ </span><span class="s0">this</span><span class="s2">.</span><span class="s1">id</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s1">world</span><span class="s2">.</span><span class="s1">removeEntity</span><span class="s2">(</span><span class="s1">scheduler</span><span class="s2">, </span><span class="s0">this</span><span class="s2">);</span>
+                
+
+                <span class="s1">world</span><span class="s2">.</span><span class="s1">addEntity</span><span class="s2">(</span><span class="s1">stump</span><span class="s2">);</span>
+
+                <span class="s0">return true</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+            <span class="s0">return false</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">executeActivity</span><span class="s2">( </span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">, </span><span class="s1">EventScheduler scheduler</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(!</span><span class="s0">this</span><span class="s2">.</span><span class="s1">transformPlant</span><span class="s2">(</span><span class="s1">world</span><span class="s2">, </span><span class="s1">scheduler</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">)) {</span>
+
+                <span class="s1">scheduler</span><span class="s2">.</span><span class="s1">scheduleEvent</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s0">new </span><span class="s1">Activity</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">world</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">), </span><span class="s0">this</span><span class="s2">.</span><span class="s1">actionPeriod</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+<span class="s1">@Override</span>
+<span class="s0">public void </span><span class="s1">executeAnimation</span><span class="s2">(</span><span class="s1">EventScheduler scheduler</span><span class="s2">, </span><span class="s0">int </span><span class="s1">repeat</span><span class="s2">) {</span>
+    <span class="s0">this</span><span class="s2">.</span><span class="s1">nextImage</span><span class="s2">();</span>
+    <span class="s0">if </span><span class="s2">(</span><span class="s1">repeat </span><span class="s2">!= </span><span class="s3">1</span><span class="s2">) {</span>
+        <span class="s1">scheduler</span><span class="s2">.</span><span class="s1">scheduleEvent</span><span class="s2">(</span>
+                <span class="s0">this</span><span class="s2">,</span>
+                <span class="s0">new </span><span class="s1">Animation</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">max</span><span class="s2">(</span><span class="s1">repeat </span><span class="s2">- </span><span class="s3">1</span><span class="s2">, </span><span class="s3">0</span><span class="s2">)),</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">getAnimationPeriod</span><span class="s2">()</span>
+        <span class="s2">);</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+<span class="s1">@Override</span>
+<span class="s0">public void </span><span class="s1">scheduleActions</span><span class="s2">(</span><span class="s1">EventScheduler scheduler</span><span class="s2">, </span><span class="s1">WorldModel world</span><span class="s2">, </span><span class="s1">ImageStore imageStore</span><span class="s2">) {</span>
+    <span class="s1">scheduler</span><span class="s2">.</span><span class="s1">scheduleEvent</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s0">new </span><span class="s1">Activity</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">world</span><span class="s2">, </span><span class="s1">imageStore</span><span class="s2">), </span><span class="s0">this</span><span class="s2">.</span><span class="s1">actionPeriod</span><span class="s2">);</span>
+    <span class="s1">scheduler</span><span class="s2">.</span><span class="s1">scheduleEvent</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s0">new </span><span class="s1">Animation</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">0</span><span class="s2">), </span><span class="s0">this</span><span class="s2">.</span><span class="s1">animationPeriod</span><span class="s2">);</span>
+<span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

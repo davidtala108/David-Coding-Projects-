@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>AStarSingleStepTest.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+AStarSingleStepTest.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">junit</span><span class="s2">.</span><span class="s1">jupiter</span><span class="s2">.</span><span class="s1">api</span><span class="s2">.</span><span class="s1">Test</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">function</span><span class="s2">.</span><span class="s1">Function</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">function</span><span class="s2">.</span><span class="s1">Predicate</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">function</span><span class="s2">.</span><span class="s1">BiPredicate</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">stream</span><span class="s2">.</span><span class="s1">Stream</span><span class="s2">;</span>
+
+<span class="s0">import static </span><span class="s1">org</span><span class="s2">.</span><span class="s1">junit</span><span class="s2">.</span><span class="s1">jupiter</span><span class="s2">.</span><span class="s1">api</span><span class="s2">.</span><span class="s1">Assertions</span><span class="s2">.*;</span>
+
+<span class="s0">public class </span><span class="s1">AStarSingleStepTest </span><span class="s2">{</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">testSimpleHorizontalPath</span><span class="s2">() {</span>
+        <span class="s1">AStarPathingStrategy strategy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">AStarPathingStrategy</span><span class="s2">();</span>
+        <span class="s1">Point start </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">0</span><span class="s2">, </span><span class="s3">0</span><span class="s2">);</span>
+        <span class="s1">Point goal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">3</span><span class="s2">, </span><span class="s3">0</span><span class="s2">);</span>
+
+        <span class="s1">Predicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">canPassThrough </span><span class="s2">= </span><span class="s1">p -&gt; </span><span class="s0">true</span><span class="s2">;  </span><span class="s4">// all points passable</span>
+        <span class="s1">BiPredicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">withinReach </span><span class="s2">= (</span><span class="s1">p1</span><span class="s2">, </span><span class="s1">p2</span><span class="s2">) </span><span class="s1">-&gt; p1</span><span class="s2">.</span><span class="s1">adjacent</span><span class="s2">(</span><span class="s1">p2</span><span class="s2">);</span>
+
+        <span class="s1">Function</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Stream</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt;&gt; </span><span class="s1">neighbors </span><span class="s2">= </span><span class="s1">p -&gt; Stream</span><span class="s2">.</span><span class="s1">of</span><span class="s2">(</span>
+                <span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s1">p</span><span class="s2">.</span><span class="s1">x </span><span class="s2">+ </span><span class="s3">1</span><span class="s2">, </span><span class="s1">p</span><span class="s2">.</span><span class="s1">y</span><span class="s2">),</span>
+                <span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s1">p</span><span class="s2">.</span><span class="s1">x </span><span class="s2">- </span><span class="s3">1</span><span class="s2">, </span><span class="s1">p</span><span class="s2">.</span><span class="s1">y</span><span class="s2">),</span>
+                <span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s1">p</span><span class="s2">.</span><span class="s1">x</span><span class="s2">, </span><span class="s1">p</span><span class="s2">.</span><span class="s1">y </span><span class="s2">+ </span><span class="s3">1</span><span class="s2">),</span>
+                <span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s1">p</span><span class="s2">.</span><span class="s1">x</span><span class="s2">, </span><span class="s1">p</span><span class="s2">.</span><span class="s1">y </span><span class="s2">- </span><span class="s3">1</span><span class="s2">)</span>
+        <span class="s2">);</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">(</span><span class="s1">start</span><span class="s2">, </span><span class="s1">goal</span><span class="s2">, </span><span class="s1">canPassThrough</span><span class="s2">, </span><span class="s1">withinReach</span><span class="s2">, </span><span class="s1">neighbors</span><span class="s2">);</span>
+
+        <span class="s4">// Only one step expected, as strategy returns next move only</span>
+        <span class="s1">assertEquals</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s1">path</span><span class="s2">.</span><span class="s1">size</span><span class="s2">());</span>
+        <span class="s1">assertEquals</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">0</span><span class="s2">), </span><span class="s1">path</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">0</span><span class="s2">));</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">testBlockedPath</span><span class="s2">() {</span>
+        <span class="s1">AStarPathingStrategy strategy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">AStarPathingStrategy</span><span class="s2">();</span>
+        <span class="s1">Point start </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">0</span><span class="s2">, </span><span class="s3">0</span><span class="s2">);</span>
+        <span class="s1">Point goal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">0</span><span class="s2">);</span>
+
+        <span class="s1">Predicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">canPassThrough </span><span class="s2">= </span><span class="s1">p -&gt; </span><span class="s0">false</span><span class="s2">; </span><span class="s4">// all points are blocked</span>
+        <span class="s1">BiPredicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">withinReach </span><span class="s2">= (</span><span class="s1">p1</span><span class="s2">, </span><span class="s1">p2</span><span class="s2">) </span><span class="s1">-&gt; p1</span><span class="s2">.</span><span class="s1">adjacent</span><span class="s2">(</span><span class="s1">p2</span><span class="s2">);</span>
+        <span class="s1">Function</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Stream</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt;&gt; </span><span class="s1">neighbors </span><span class="s2">= </span><span class="s1">PathingStrategy</span><span class="s2">.</span><span class="s1">CARDINAL_NEIGHBORS</span><span class="s2">;</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">(</span><span class="s1">start</span><span class="s2">, </span><span class="s1">goal</span><span class="s2">, </span><span class="s1">canPassThrough</span><span class="s2">, </span><span class="s1">withinReach</span><span class="s2">, </span><span class="s1">neighbors</span><span class="s2">);</span>
+
+        <span class="s4">// No path should be found</span>
+        <span class="s1">assertTrue</span><span class="s2">(</span><span class="s1">path</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">());</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">testAlreadyAtGoal</span><span class="s2">() {</span>
+        <span class="s1">AStarPathingStrategy strategy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">AStarPathingStrategy</span><span class="s2">();</span>
+        <span class="s1">Point start </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">2</span><span class="s2">, </span><span class="s3">2</span><span class="s2">);</span>
+        <span class="s1">Point goal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">2</span><span class="s2">, </span><span class="s3">2</span><span class="s2">); </span><span class="s4">// already there</span>
+
+        <span class="s1">Predicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">canPassThrough </span><span class="s2">= </span><span class="s1">p -&gt; </span><span class="s0">true</span><span class="s2">;</span>
+        <span class="s1">BiPredicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">withinReach </span><span class="s2">= (</span><span class="s1">p1</span><span class="s2">, </span><span class="s1">p2</span><span class="s2">) </span><span class="s1">-&gt; p1</span><span class="s2">.</span><span class="s1">adjacent</span><span class="s2">(</span><span class="s1">p2</span><span class="s2">);</span>
+        <span class="s1">Function</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Stream</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt;&gt; </span><span class="s1">neighbors </span><span class="s2">= </span><span class="s1">PathingStrategy</span><span class="s2">.</span><span class="s1">CARDINAL_NEIGHBORS</span><span class="s2">;</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">(</span><span class="s1">start</span><span class="s2">, </span><span class="s1">goal</span><span class="s2">, </span><span class="s1">canPassThrough</span><span class="s2">, </span><span class="s1">withinReach</span><span class="s2">, </span><span class="s1">neighbors</span><span class="s2">);</span>
+
+        <span class="s4">// Already at goal, no steps needed</span>
+        <span class="s1">assertTrue</span><span class="s2">(</span><span class="s1">path</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">());</span>
+    <span class="s2">}</span>
+    <span class="s0">private final </span><span class="s1">Function</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Stream</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt;&gt; </span><span class="s1">cardinalNeighbors </span><span class="s2">= </span><span class="s1">p -&gt; Stream</span><span class="s2">.</span><span class="s1">of</span><span class="s2">(</span>
+            <span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s1">p</span><span class="s2">.</span><span class="s1">x</span><span class="s2">, </span><span class="s1">p</span><span class="s2">.</span><span class="s1">y </span><span class="s2">- </span><span class="s3">1</span><span class="s2">), </span><span class="s4">// up</span>
+            <span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s1">p</span><span class="s2">.</span><span class="s1">x</span><span class="s2">, </span><span class="s1">p</span><span class="s2">.</span><span class="s1">y </span><span class="s2">+ </span><span class="s3">1</span><span class="s2">), </span><span class="s4">// down</span>
+            <span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s1">p</span><span class="s2">.</span><span class="s1">x </span><span class="s2">- </span><span class="s3">1</span><span class="s2">, </span><span class="s1">p</span><span class="s2">.</span><span class="s1">y</span><span class="s2">), </span><span class="s4">// left</span>
+            <span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s1">p</span><span class="s2">.</span><span class="s1">x </span><span class="s2">+ </span><span class="s3">1</span><span class="s2">, </span><span class="s1">p</span><span class="s2">.</span><span class="s1">y</span><span class="s2">)  </span><span class="s4">// right</span>
+    <span class="s2">);</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">testSimpleStepRight</span><span class="s2">() {</span>
+        <span class="s1">SingleStepPathingStrategy strategy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SingleStepPathingStrategy</span><span class="s2">();</span>
+        <span class="s1">Point start </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">1</span><span class="s2">);</span>
+        <span class="s1">Point goal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">4</span><span class="s2">, </span><span class="s3">1</span><span class="s2">);  </span><span class="s4">// Rightward</span>
+
+        <span class="s1">Predicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">canPassThrough </span><span class="s2">= </span><span class="s1">p -&gt; </span><span class="s0">true</span><span class="s2">;</span>
+        <span class="s1">BiPredicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">withinReach </span><span class="s2">= </span><span class="s1">Point::adjacent</span><span class="s2">;</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">(</span><span class="s1">start</span><span class="s2">, </span><span class="s1">goal</span><span class="s2">, </span><span class="s1">canPassThrough</span><span class="s2">, </span><span class="s1">withinReach</span><span class="s2">, </span><span class="s1">cardinalNeighbors</span><span class="s2">);</span>
+
+        <span class="s1">assertEquals</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s1">path</span><span class="s2">.</span><span class="s1">size</span><span class="s2">());</span>
+        <span class="s1">assertEquals</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">2</span><span class="s2">, </span><span class="s3">1</span><span class="s2">), </span><span class="s1">path</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">0</span><span class="s2">));  </span><span class="s4">// One step right</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">testBlockedRightStep</span><span class="s2">() {</span>
+        <span class="s1">SingleStepPathingStrategy strategy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SingleStepPathingStrategy</span><span class="s2">();</span>
+        <span class="s1">Point start </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">1</span><span class="s2">);</span>
+        <span class="s1">Point goal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">4</span><span class="s2">, </span><span class="s3">1</span><span class="s2">);</span>
+
+        <span class="s1">Predicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">canPassThrough </span><span class="s2">= </span><span class="s1">p -&gt; </span><span class="s2">!</span><span class="s1">p</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">2</span><span class="s2">, </span><span class="s3">1</span><span class="s2">)); </span><span class="s4">// block right neighbor</span>
+        <span class="s1">BiPredicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">withinReach </span><span class="s2">= </span><span class="s1">Point::adjacent</span><span class="s2">;</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">(</span><span class="s1">start</span><span class="s2">, </span><span class="s1">goal</span><span class="s2">, </span><span class="s1">canPassThrough</span><span class="s2">, </span><span class="s1">withinReach</span><span class="s2">, </span><span class="s1">cardinalNeighbors</span><span class="s2">);</span>
+
+        <span class="s4">// No valid step toward goal</span>
+        <span class="s1">assertTrue</span><span class="s2">(</span><span class="s1">path</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">());</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">testDownIsCloserThanUp</span><span class="s2">() {</span>
+        <span class="s1">SingleStepPathingStrategy strategy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SingleStepPathingStrategy</span><span class="s2">();</span>
+        <span class="s1">Point start </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">2</span><span class="s2">, </span><span class="s3">2</span><span class="s2">);</span>
+        <span class="s1">Point goal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">2</span><span class="s2">, </span><span class="s3">4</span><span class="s2">);  </span><span class="s4">// Down</span>
+
+        <span class="s1">Predicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">canPassThrough </span><span class="s2">= </span><span class="s1">p -&gt; </span><span class="s0">true</span><span class="s2">;</span>
+        <span class="s1">BiPredicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">withinReach </span><span class="s2">= </span><span class="s1">Point::adjacent</span><span class="s2">;</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">(</span><span class="s1">start</span><span class="s2">, </span><span class="s1">goal</span><span class="s2">, </span><span class="s1">canPassThrough</span><span class="s2">, </span><span class="s1">withinReach</span><span class="s2">, </span><span class="s1">cardinalNeighbors</span><span class="s2">);</span>
+
+        <span class="s1">assertEquals</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s1">path</span><span class="s2">.</span><span class="s1">size</span><span class="s2">());</span>
+        <span class="s1">assertEquals</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">2</span><span class="s2">, </span><span class="s3">3</span><span class="s2">), </span><span class="s1">path</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">0</span><span class="s2">));  </span><span class="s4">// One step down</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">testNoValidStep</span><span class="s2">() {</span>
+        <span class="s1">SingleStepPathingStrategy strategy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SingleStepPathingStrategy</span><span class="s2">();</span>
+        <span class="s1">Point start </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">1</span><span class="s2">);</span>
+        <span class="s1">Point goal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">0</span><span class="s2">);</span>
+
+        <span class="s1">Predicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">canPassThrough </span><span class="s2">= </span><span class="s1">p -&gt; </span><span class="s0">false</span><span class="s2">;  </span><span class="s4">// All neighbors are blocked</span>
+        <span class="s1">BiPredicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">withinReach </span><span class="s2">= </span><span class="s1">Point::adjacent</span><span class="s2">;</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">(</span><span class="s1">start</span><span class="s2">, </span><span class="s1">goal</span><span class="s2">, </span><span class="s1">canPassThrough</span><span class="s2">, </span><span class="s1">withinReach</span><span class="s2">, </span><span class="s1">cardinalNeighbors</span><span class="s2">);</span>
+
+        <span class="s1">assertTrue</span><span class="s2">(</span><span class="s1">path</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">());</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Test</span>
+    <span class="s0">public void </span><span class="s1">testIgnoresEndPoint</span><span class="s2">() {</span>
+        <span class="s1">SingleStepPathingStrategy strategy </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SingleStepPathingStrategy</span><span class="s2">();</span>
+        <span class="s1">Point start </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">1</span><span class="s2">);</span>
+        <span class="s1">Point goal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">0</span><span class="s2">);  </span><span class="s4">// Up is the goal</span>
+
+        <span class="s1">Predicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">canPassThrough </span><span class="s2">= </span><span class="s1">p -&gt; </span><span class="s0">true</span><span class="s2">;</span>
+        <span class="s1">BiPredicate</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">, </span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">withinReach </span><span class="s2">= </span><span class="s1">Point::adjacent</span><span class="s2">;</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Point</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">strategy</span><span class="s2">.</span><span class="s1">computePath</span><span class="s2">(</span><span class="s1">start</span><span class="s2">, </span><span class="s1">goal</span><span class="s2">, </span><span class="s1">canPassThrough</span><span class="s2">, </span><span class="s1">withinReach</span><span class="s2">, </span><span class="s1">cardinalNeighbors</span><span class="s2">);</span>
+
+        <span class="s4">// It should ignore the goal point, so no path returned</span>
+        <span class="s1">assertTrue</span><span class="s2">(</span><span class="s1">path</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">());</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+</pre>
+</body>
+</html>
